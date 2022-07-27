@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1 align="center">聊个天</h1>
+<table align="center">
+    <tr>
+        <td><textarea id="words" cols="25" rows="5"></textarea></td>
+    </tr>
+    <tr>
+        <td>
+            <button id="sen" onclick="send()">发送消息</button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p align="center" id="xxx">聊天记录</p>
+        </td>
+    </tr>
+</table>
+
+</body>
+<script src="jquery-3.6.0.min.js"></script>
+<script>
+    var websocket = null;
+    var nickname = ''
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://192.168.5.145:8080/avboy");
+    } else {
+        alert("这个浏览器不支持");
+    }
+
+    websocket.onopen = function (event) {
+        nickname = prompt("输入您的昵称开始聊天")
+        $.ajax({
+            type:"GET",
+            url:"http://192.168.5.145:8080/join/ws",
+            data:{"nickname": nickname},
+            dataType:"json",
+            success:function (backdata,status,xmlHttpRequest) {
+            },
+            error:function (msg) {
+            }
+        })
+    }
+
+    websocket.onclose = function (event) {
+        alert("关闭了");
+    }
+
+    websocket.onerror = function (event) {
+        alert("传输错误");
+    }
+
+    websocket.onmessage = function (event) {
+        document.getElementById("xxx").innerHTML += event.data;
+
+    }
+    document.onkeydown = function (e) { // 回车提交表单
+        var theEvent = window.event || e;
+        var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+        if (code == 13) {
+            send();
+        }
+    }
+
+    function send() {
+        var msg = document.getElementById("words").value;
+        document.getElementById('words').value = '';
+        websocket.send(`<h3><strong>${nickname} : ${msg}</strong></h3>`);
+    }
+</script>
+</html>
