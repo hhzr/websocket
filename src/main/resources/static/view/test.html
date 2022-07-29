@@ -15,6 +15,12 @@
         <td>
             <button id="sen" onclick="send()">发送消息</button>
         </td>
+        <td>
+            <button id="selectUser" onclick="selectUser()">选择用户</button>
+        </td>
+        <td id="nicknameSelectTd" hidden>
+            选择用户<select id="nicknameSelect" onchange="sendMessageToUser()"></select>
+        </td>
     </tr>
     <tr>
         <td>
@@ -26,24 +32,24 @@
 </body>
 <script src="jquery-3.6.0.min.js"></script>
 <script>
-    var websocket = null;
     var nickname = ''
+    var websocket = null;
     if ('WebSocket' in window) {
-        websocket = new WebSocket("ws://fbrx.tpddns.cn:39112/avboy");
+        nickname = prompt("输入您的昵称开始聊天")
+        websocket = new WebSocket("ws://localhost:39112/socketService/toChatWith/" + nickname);
     } else {
         alert("这个浏览器不支持");
     }
 
     websocket.onopen = function (event) {
-        nickname = prompt("输入您的昵称开始聊天")
         $.ajax({
-            type:"GET",
-            url:"http://fbrx.tpddns.cn:39112/join/ws",
-            data:{"nickname": nickname},
-            dataType:"json",
-            success:function (backdata,status,xmlHttpRequest) {
+            type: "GET",
+            url: "http://localhost:39112/join/login",
+            data: {"nickname": nickname},
+            dataType: "json",
+            success: function (backdata, status, xmlHttpRequest) {
             },
-            error:function (msg) {
+            error: function (msg) {
             }
         })
     }
@@ -72,6 +78,54 @@
         var msg = document.getElementById("words").value;
         document.getElementById('words').value = '';
         websocket.send(`<h3><strong>${nickname} : ${msg}</strong></h3>`);
+    }
+
+    function selectUser() {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:39112/join/getAllUser",
+            data: {"nickname": nickname},
+            dataType: "json",
+            success: function (response) {
+                if (response.code === 200) {
+                    let nicknameList = response.data;
+                    let selectHtml = '';
+                    if (nicknameList.length <= 0) {
+                        alert("当前还没有用户登录")
+                    } else {
+                        nicknameList.forEach(item => {
+                            selectHtml += `<option value="${item}">${item}</option>`
+                        });
+                        $('#nicknameSelect').append(selectHtml)
+                        $('#nicknameSelectTd').show()
+                    }
+                }
+            },
+            error: function (msg) {
+            }
+        })
+    }
+
+    function sendMessageToUser() {
+        let message = prompt("输入您要发送的消息")
+        let toNickname = $('#nicknameSelect').val()
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:39112/join/sendMessageToUser",
+            data: {
+                "sendNickname": nickname,
+                "nickname": toNickname,
+                "message": message
+            },
+            dataType: "json",
+            success: function (response) {
+                if (response.code === 200) {
+                    alert("发送成功")
+                }
+            },
+            error: function (msg) {
+            }
+        })
     }
 </script>
 </html>

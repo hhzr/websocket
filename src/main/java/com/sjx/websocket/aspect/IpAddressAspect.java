@@ -1,7 +1,8 @@
-package com.sjx.websocket_demo.aspect;
+package com.sjx.websocket.aspect;
 
-import com.sjx.websocket_demo.util.websocket.WebSocket;
-import com.sjx.websocket_demo.utils.Ip2regionUtil;
+import com.sjx.websocket.util.websocket.WebSocket;
+import com.sjx.websocket.util.ip2region.Ip2regionUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -11,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -21,6 +23,7 @@ import java.util.Map;
  */
 @Component
 @Aspect
+@Slf4j
 public class IpAddressAspect {
 
 	@Resource
@@ -29,7 +32,7 @@ public class IpAddressAspect {
 	@Resource
 	private WebSocket webSocket;
 
-	@Before("execution(* com.sjx.websocket_demo.controller..*(..))")
+	@Before("execution(* com.sjx.websocket.controller.TestController.login(..))")
 	public void before(JoinPoint joinPoint) {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		if (requestAttributes != null) {
@@ -67,11 +70,13 @@ public class IpAddressAspect {
 					ip = ip.substring(0, ip.indexOf(","));
 				}
 			}
-			Object[] args = joinPoint.getArgs();
 			Map<String, Object> ipTerritory = ip2regionUtil.getIPTerritory(ip);
 			if (ipTerritory != null) {
-				webSocket.onMessage("<h5><strong>" + args[0] + " : 加入群聊</strong></h5>");
-				webSocket.onMessage("<h5><strong>他是来自 " + ipTerritory.get("country") + " " + ipTerritory.get("province") + " " + ipTerritory.get("city") + "的小伙伴</strong></h5>");
+				try {
+					webSocket.onMessage("<h5><strong>他是来自 " + ipTerritory.get("country") + " " + ipTerritory.get("province") + " " + ipTerritory.get("city") + "的小伙伴</strong></h5>");
+				} catch (IOException e) {
+					log.error("登录失败", e);
+				}
 			}
 		}
 //		// 取mac地址

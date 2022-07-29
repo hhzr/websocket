@@ -1,4 +1,4 @@
-package com.sjx.websocket_demo;
+package com.sjx.websocket;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
