@@ -15,7 +15,7 @@ public class TestController {
 
     @GetMapping("/ws")
     public void ws(@RequestParam(value = "nickname")String nickname) {
-        webSocket.onMessage("<h5><strong>" + nickname + " : 加入群聊</strong></h5>");
+//        webSocket.onMessage("<h5><strong>" + nickname + " : 加入群聊</strong></h5>");
     }
 
 }
