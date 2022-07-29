@@ -1,7 +1,7 @@
 package com.sjx.websocket.aspect;
 
-import com.sjx.websocket.util.websocket.WebSocket;
 import com.sjx.websocket.util.ip2region.Ip2regionUtil;
+import com.sjx.websocket.util.websocket.WebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,10 +12,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Map;
 
 /**
  * SunJingxuan
@@ -32,7 +30,7 @@ public class IpAddressAspect {
 	@Resource
 	private WebSocket webSocket;
 
-	@Before("execution(* com.sjx.websocket.controller.TestController.login(..))")
+	@Before("execution(* com.sjx.websocket.controller.UserController.login(..))")
 	public void before(JoinPoint joinPoint) {
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		if (requestAttributes != null) {
@@ -70,14 +68,15 @@ public class IpAddressAspect {
 					ip = ip.substring(0, ip.indexOf(","));
 				}
 			}
-			Map<String, Object> ipTerritory = ip2regionUtil.getIPTerritory(ip);
-			if (ipTerritory != null) {
-				try {
-					webSocket.onMessage("<h5><strong>他是来自 " + ipTerritory.get("country") + " " + ipTerritory.get("province") + " " + ipTerritory.get("city") + "的小伙伴</strong></h5>");
-				} catch (IOException e) {
-					log.error("登录失败", e);
-				}
-			}
+//			Object[] args = joinPoint.getArgs();
+//			Map<String, Object> ipTerritory = ip2regionUtil.getIPTerritory(ip);
+//			if (ipTerritory != null) {
+//				try {
+//					webSocket.onMessage("<h5><strong>他是来自 " + ipTerritory.get("country") + " " + ipTerritory.get("province") + " " + ipTerritory.get("city") + "的小伙伴</strong></h5>", args[0].toString());
+//				} catch (IOException e) {
+//					log.error("登录失败", e);
+//				}
+//			}
 		}
 //		// 取mac地址
 //		byte[] macAddressBytes = new byte[0];

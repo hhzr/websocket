@@ -30,7 +30,7 @@ public class WebSocket {
         WEB_SOCKETS.add(this);
         if (!StringUtils.isEmpty(nickname)) {
             USERS.put(nickname, this);
-            this.onMessage("<h5><strong>" + nickname + " : 加入群聊</strong></h5>");
+//            this.onMessage("<h5><strong>" + nickname + " : 加入群聊</strong></h5>", nickname);
         }
         log.info("连上了一个，现在总共有：{}个连接", USERS.size());
     }
@@ -43,10 +43,16 @@ public class WebSocket {
     }
 
     @OnMessage
-    public void onMessage(String message) throws IOException {
-        for (WebSocket webSocket: WEB_SOCKETS){
-            webSocket.session.getBasicRemote().sendText(message);
-        }
+    public void onMessage(String message, @PathParam(value = "nickname")String nickname) throws IOException {
+        USERS.forEach((k, v) -> {
+            if (!k.equals(nickname)) {
+                try {
+                    v.session.getBasicRemote().sendText(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @OnError

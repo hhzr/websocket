@@ -1,11 +1,14 @@
 package com.sjx.websocket.controller;
 
 import com.sjx.websocket.pojo.Response;
+import com.sjx.websocket.pojo.User;
+import com.sjx.websocket.service.UserService;
 import com.sjx.websocket.util.websocket.WebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.Set;
 
@@ -13,14 +16,17 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/join")
 @Slf4j
-public class TestController {
+public class UserController {
 
     @Resource
     private WebSocket webSocket;
 
+    @Resource
+    private UserService userService;
+
     @GetMapping("/login")
-    public void login(@RequestParam(value = "nickname")String nickname) {
-//        webSocket.onMessage("<h5><strong>" + nickname + " : 加入群聊</strong></h5>");
+    public Response<User> login(@RequestParam(value = "adminPhone")String adminPhone, @PathParam(value = "password")String password) {
+        return new Response<>(200, "成功", userService.login(adminPhone, password));
     }
 
     @GetMapping("/getAllUser")

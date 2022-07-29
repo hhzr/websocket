@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+手机号<input id="phone" type="tel">
+密码<input id="password" type="password">
+<button id="loginBtn" onclick="login()">登录</button>
+</body>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script>
+function login() {
+    let phone = $('#phone').val();
+    let password = $('#password').val()
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:39112/join/login",
+        data: {
+            "adminPhone": phone,
+            "password": password
+        },
+        dataType: "json",
+        success: function (response) {
+            if (response.code === 200) {
+                window.local.href("./chat.html")
+            }
+        },
+        error: function (msg) {
+        }
+    })
+}
+</script>
+</html>
