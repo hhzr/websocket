@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class Ip2regionUtil {
 
 	public Map<String, Object> getIPTerritory(String ip) {
-//		String dbPath = "/root/ip2region.xdb";
-		String dbPath = "E:\\ip2region.xdb";
+		String dbPath = "/root/ip2region.xdb";
+//		String dbPath = "E:\\ip2region.xdb";
 
 		// 1、从 dbPath 中预先加载 VectorIndex 缓存，并且把这个得到的数据作为全局变量，后续反复使用。
 		byte[] vIndex;
