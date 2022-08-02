@@ -1,25 +1,10 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="format-detection" content="telephone=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta content="yes" name="apple-mobile-web-app-capable">
-    <meta content="yes" name="apple-touch-fullscreen">
-    <meta name="full-screen" content="yes">
-    <meta content="default" name="apple-mobile-web-app-status-bar-style">
-    <meta name="screen-orientation" content="portrait">
-    <meta name="browsermode" content="application">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="x5-orientation" content="portrait">
-    <meta name="x5-fullscreen" content="true">
-    <meta name="x5-page-mode" content="app">
     <base target="_blank">
     <title>会话_聊天机器人</title>
-    <link href="./js/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link rel="icon" href="./img/melaleuca.png">
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="./css/chat.css" rel="stylesheet">
     <link href="./layer/mobile/need/layer.css">
 </head>
@@ -31,22 +16,14 @@
         <div class="abs cover pnl-body" id="pnlBody">
             <div class="abs cover pnl-left">
                 <div class="abs cover pnl-msgs scroll" id="show">
-                    <div class="msg min time" id="histStart">加载历史消息</div>
+<!--                    <div class="msg min time" id="histStart">加载历史消息</div>-->
                     <div class="pnl-list" id="hists">
                         <!-- 历史消息 -->
                     </div>
                     <div class="pnl-list" id="msgs">
-                        <div class="msg robot">
-                            <div class="msg-left" worker="小龙">
-                                <div class="msg-host photo" style="background-image: url(./img/melaleuca.png)"></div>
-                                <div class="msg-ball" title="今天 17:52:06">你好，我是只能打字的聊天机器人 <br><br>您是想要了解哪些方面呢？</div>
-                            </div>
+                        <div class="msg other">
                         </div>
-                        <div class="msg guest">
-                            <div class="msg-right">
-                                <div class="msg-host headDefault"></div>
-                                <div class="msg-ball" title="今天 17:52:06">你好</div>
-                            </div>
+                        <div class="msg me">
                         </div>
                     </div>
                     <div class="pnl-list hide" id="unreadLine">
@@ -98,6 +75,7 @@
 </div>
 </body>
 <script src="./js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
 <script src="./layer/layer.js"></script>
 <script src="./js/chat.js"></script>
 </html>

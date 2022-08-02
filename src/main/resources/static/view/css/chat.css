@@ -1680,7 +1680,7 @@ video {
     content: "\E802"
 }
 
-.kh-robot::before {
+.kh-other::before {
     content: "\E803"
 }
 
@@ -2312,7 +2312,7 @@ body {
     background-color: #888
 }
 
-.msg.guest .ic {
+.msg.me .ic {
     margin: 0
 }
 
@@ -2329,11 +2329,11 @@ body {
     font-size: 2.42em
 }
 
-.msg.robot .msg-ball {
+.msg.other .msg-ball {
     background-color: #e0f4e0;
 }
 
-.msg.robot .msg-ball:before {
+.msg.other .msg-ball:before {
     border-color: transparent #e0f4e0 transparent transparent
 }
 
@@ -2376,11 +2376,11 @@ body {
     left: 0
 }
 
-.msg.robot .msg-host {
+.msg.other .msg-host {
     background-color: #83d85b
 }
 
-.msg.robot .ic {
+.msg.other .ic {
     font-size: 3em;
     margin: 0
 }
@@ -2908,7 +2908,6 @@ a {
     position: absolute;
     right: .5em;
     top: .5em;
-    background-image: url("../images/1.jpg");
     -webkit-background-size: cover;
     -moz-background-size: cover;
     background-size: cover;
@@ -3265,7 +3264,7 @@ a {
     color: #848484;
     margin-bottom: -.5em;
     margin-left: 3.8em;
-    padding-top: .5em
+    padding-top: .5em;
 }
 
 .msg-left > .msg-host {
@@ -3885,12 +3884,12 @@ body.phone .media-container, body.ifr .media-container {
         color: #4270f6
     }
 
-    .msg.robot .msg-ball {
+    .msg.other .msg-ball {
         color: #323232;
         background-color: #e0f4e0;
     }
 
-    .msg.robot .msg-ball:before {
+    .msg.other .msg-ball:before {
         border-color: transparent #e0f4e0 transparent transparent
     }
 
@@ -4334,12 +4333,12 @@ body.phone .msg-ball {
     color: #4270f6
 }
 
-body.phone .msg.robot .msg-ball {
+body.phone .msg.other .msg-ball {
     color: #323232;
     background-color: #e0f4e0;
 }
 
-body.phone .msg.robot .msg-ball:before {
+body.phone .msg.other .msg-ball:before {
     border-color: transparent #e0f4e0 transparent transparent
 }
 
@@ -4458,12 +4457,12 @@ body.ifr:not(.phone) .pnl-body .pnl-msgs .msg-left:before {
     padding-top: 0
 }
 
-body.ifr:not(.phone) .pnl-body .pnl-msgs .msg.robot .msg-ball {
+body.ifr:not(.phone) .pnl-body .pnl-msgs .msg.other .msg-ball {
     color: #323232;
     background-color: #e0f4e0;
 }
 
-body.ifr:not(.phone) .pnl-body .pnl-msgs .msg.robot .msg-ball:before {
+body.ifr:not(.phone) .pnl-body .pnl-msgs .msg.other .msg-ball:before {
     border-color: transparent #e0f4e0 transparent transparent
 }
 
@@ -4697,7 +4696,6 @@ body.ifr.ifr0 .pnl-worker-photo {
     margin: .5em 0;
     width: 2em;
     height: 2em;
-    background-image: url("")
 }
 
 body.ifr.ifr0 .pnl-worker-icon {
@@ -5007,10 +5005,7 @@ body[lang='en'] #humanBtn::after {
 body[lang='tw'] #humanBtn::after {
     content: '转人工' !important
 }
-
-
 .headDefault {
     background-color: transparent !important;
     border-radius: 5px;
-    background-image: url(../img/melaleuca.png);
 }

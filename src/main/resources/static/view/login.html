@@ -1,35 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <link rel="icon" href="./img/melaleuca.png">
+    <link rel="stylesheet" href="./layui/css/layui.css">
+    <link rel="stylesheet" href="./css/login.css">
 </head>
 <body>
-手机号<input id="phone" type="tel">
-密码<input id="password" type="password">
-<button id="loginBtn" onclick="login()">登录</button>
+<form class="layui-form">
+    <div class="container">
+        <div class="layui-form-mid layui-word-aux">
+            <img id="logoid" src="./img/login.png" style="height: 35px">
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-block">
+                <input type="text" name="userPhone" required lay-verify="phone" placeholder="请输入用户名" autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">密 &nbsp;&nbsp;码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="userPassword" required lay-verify="password" placeholder="请输入密码"
+                       autocomplete="off" class="layui-input">
+            </div>
+            <!-- <div class="layui-form-mid layui-word-aux">辅助文字</div> -->
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">验证码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="verifyCode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input verity">
+            </div>
+            <div class="layui-form-mid layui-word-aux" id="verifyCode"></div>
+        </div>
+        <!-- 			  <div class="layui-form-item">
+                            <label class="layui-form-label">记住密码</label>
+                            <div class="layui-input-block">
+                              <input type="checkbox" name="close" lay-skin="switch" lay-text="ON|OFF">
+                            </div>
+                      </div> -->
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type="button" lay-submit lay-filter="loginBtn">登陆</button>
+            </div>
+        </div>
+        <a href="" class="font-set">忘记密码?</a> <a href="" class="font-set">立即注册</a>
+    </div>
+</form>
 </body>
-<script src="js/jquery-3.6.0.min.js"></script>
-<script>
-function login() {
-    let phone = $('#phone').val();
-    let password = $('#password').val()
-    $.ajax({
-        type: "GET",
-        url: "http://localhost:39112/join/login",
-        data: {
-            "adminPhone": phone,
-            "password": password
-        },
-        dataType: "json",
-        success: function (response) {
-            if (response.code === 200) {
-                window.local.href("./chat.html")
-            }
-        },
-        error: function (msg) {
-        }
-    })
-}
-</script>
+</html>
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+<script type="text/javascript" src="layui/layui.js"></script>
+<script type="text/javascript" src="layer/layer.js"></script>
+<script type="text/javascript" src="js/login.js"></script>
 </html>

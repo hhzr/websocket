@@ -1,6 +1,7 @@
 package com.sjx.websocket.service;
 
-import com.sjx.websocket.pojo.User;
+import com.sjx.websocket.entity.module.User;
+import com.sjx.websocket.entity.vo.LoginVO;
 
 /**
  * SunJingxuan
@@ -8,5 +9,5 @@ import com.sjx.websocket.pojo.User;
  */
 
 public interface UserService {
-	User login(String adminPhone, String password);
+	User login(LoginVO loginVO);
 }

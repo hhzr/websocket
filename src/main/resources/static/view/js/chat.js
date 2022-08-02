@@ -1,40 +1,61 @@
+var user = JSON.parse(window.sessionStorage.getItem("user"))
 var nickname = ''
+var headImg = ''
 var websocket = null;
-if ('WebSocket' in window) {
-    nickname = prompt("输入您的昵称开始聊天")
-    websocket = new WebSocket("ws://localhost:39112/socketService/toChatWith/" + nickname);
-} else {
-    alert("这个浏览器不支持");
-}
+$(function (){
+    let vConsole = new VConsole();
+    if (user == null) {
+        window.location.href = "./login.html"
+    } else {
+        nickname = user.userNickname
+        headImg = user.userHeadImg
+        userId = user.userId
+    }
 
-websocket.onopen = function (event) {
+    if ('WebSocket' in window) {
+        websocket = new WebSocket("ws://192.168.5.145:39112/socketService/toChatWith/" + userId);
+    } else {
+        alert("这个浏览器不支持");
+    }
 
-}
+    websocket.onopen = function (event) {
+        console.log("已建立连接")
+    }
 
-websocket.onclose = function (event) {
-    alert("关闭了");
-}
+    websocket.onclose = function (event) {
+        console.log(event)
+        console.log("连接已关闭")
+    }
 
-websocket.onerror = function (event) {
-    alert("传输错误");
-}
+    websocket.onerror = function (event) {
+        console.log(event)
+    }
 
-websocket.onmessage = function (event) {
-    document.getElementById("msgs").innerHTML += event.data;
-
-}
+    websocket.onmessage = function (event) {
+        let messageData = JSON.parse(event.data);
+        let msgHtml = `<div class="msg other">
+                           <div class="msg-left" worker="${messageData.nickname}">
+                               <div class="msg-host photo" style="background-image: url(${messageData.headImg})">                          
+                               </div>
+                               <div class="msg-ball" title="今天 17:52:06">${messageData.message}
+                               </div>
+                           </div>
+                       </div>`
+        $('#msgs').append(msgHtml)
+    }
+})
 document.onkeydown = function (e) { // 回车提交表单
     var theEvent = window.event || e;
     var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
     if (code === 13) {
-        send();
+        SendMsg();
     }
 }
 
 function selectUser() {
     $.ajax({
         type: "GET",
-        url: "http://localhost:39112/join/getAllUser",
+        url: "http://192.168.5.145:39112/join/getAllUser",
         data: {"nickname": nickname},
         dataType: "json",
         success: function (response) {
@@ -62,7 +83,7 @@ function sendMessageToUser() {
     let toNickname = $('#nicknameSelect').val()
     $.ajax({
         type: "GET",
-        url: "http://localhost:39112/join/sendMessageToUser",
+        url: "http://192.168.5.145:39112/join/sendMessageToUser",
         data: {
             "sendNickname": nickname,
             "nickname": toNickname,
@@ -89,9 +110,9 @@ function SendMsg() {
     if (message.val() === "" || message.val() == null) {
         layer.msg('请输入消息');
     } else {
-        message.val(SendMsgDispose(message.val()))
-        AddMsg(message.val());
-        let msg = `<div class="msg robot"><div class="msg-left" worker="${nickname}"><div class="msg-host photo" style="background-image: url(../img/melaleuca.png)"></div><div class="msg-ball" title="今天 17:52:06">${message.val()}</div></div></div>`
+        let msg = message.val()
+        message.val(SendMsgDispose(msg))
+        AddMsg(msg);
         websocket.send(msg);
         message.val("")
     }
@@ -106,5 +127,5 @@ function SendMsgDispose(detail) {
 // 增加信息
 function AddMsg(content) {
     var msgs = document.getElementById("msgs");
-    msgs.innerHTML = msgs.innerHTML + `<div class="msg guest"><div class="msg-right"><div class="msg-host headDefault"></div><div class="msg-ball" title="今天 17:52:06">${content}</div></div></div>`;
+    msgs.innerHTML = msgs.innerHTML + `<div class="msg me"><div class="msg-right""><div class="msg-host headDefault" style="background-image: url(${user.userHeadImg})"></div><div class="msg-ball" title="今天 17:52:06">${content}</div></div></div>`;
 }
