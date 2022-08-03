@@ -1,5 +1,9 @@
 package com.sjx.websocket.aspect;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sjx.websocket.entity.http.Response;
+import com.sjx.websocket.entity.vo.UserVO;
 import com.sjx.websocket.exception.GlobalException;
 import com.sjx.websocket.util.ip2region.Ip2regionUtil;
 import com.sjx.websocket.util.random.RandomUtil;
@@ -7,8 +11,12 @@ import com.sjx.websocket.util.redis.RedisUtil;
 import com.sjx.websocket.util.websocket.WebSocket;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -38,8 +46,59 @@ public class IpAddressAspect {
 	@Resource
 	private RedisUtil redisUtil;
 
-	@Before("execution(* com.sjx.websocket.controller.UserController.getVerifyCode(..))")
-	public void before(JoinPoint joinPoint) {
+	@Resource
+	private ObjectMapper objectMapper;
+
+	@Pointcut(value = "execution(* com.sjx.websocket.controller.UserController.getVerifyCode(..))")
+	public void getVerifyCodeAut() {
+
+	}
+
+	@Pointcut(value = "execution(* com.sjx.websocket.controller.UserController.login(..))")
+	public void loginAut() {
+
+	}
+
+	@Before("getVerifyCodeAut()")
+	public void getVerifyCode(JoinPoint joinPoint) {
+		// 取mac地址
+		byte[] macAddressBytes = new byte[0];
+		try {
+			macAddressBytes = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
+		} catch (SocketException | UnknownHostException e) {
+			log.error("未获取到ip地址", e);
+		}
+		// 下面代码是把mac地址拼装成String
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < macAddressBytes.length; i++) {
+			if (i != 0) {
+				sb.append("-");
+			}
+			// mac[i] & 0xFF 是为了把byte转化为正整数
+			String s = Integer.toHexString(macAddressBytes[i] & 0xFF);
+			sb.append(s.length() == 1 ? 0 + s : s);
+		}
+		String macAddress = sb.toString().trim().toUpperCase();
+		try {
+			boolean exists = redisUtil.exists(macAddress);
+			if (!exists) {
+				redisUtil.set(macAddress, RandomUtil.getRandomNum(4, true));
+			}
+		} catch (GlobalException e) {
+			log.error("获取IP地址异常", e);
+		}
+	}
+
+	@Around("loginAut()")
+	public ResponseEntity<Response<UserVO>> login(ProceedingJoinPoint joinPoint) {
+		UserVO data = new UserVO();
+		try {
+			ResponseEntity proceed = (ResponseEntity)joinPoint.proceed();
+			Response<UserVO> response = objectMapper.convertValue(proceed.getBody(), new TypeReference<Response<UserVO>>(){});
+			data = response.getData();
+		} catch (Throwable e) {
+			log.error("获取ip地址异常", e);
+		}
 		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
 		String requestUrl = "";
 		StringBuilder enumName = new StringBuilder();
@@ -80,34 +139,12 @@ public class IpAddressAspect {
 			if (null != ip && ip.length() > 15) {
 				if (ip.indexOf(",") > 15) {
 					ip = ip.substring(0, ip.indexOf(","));
+					data.setAddress(ip);
+					return ResponseEntity.ok(Response.success("登陆成功", data));
 				}
 			}
 		}
-		// 取mac地址
-		byte[] macAddressBytes = new byte[0];
-		try {
-			macAddressBytes = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress();
-		} catch (SocketException | UnknownHostException e) {
-			log.error("未获取到ip地址", e);
-		}
-		// 下面代码是把mac地址拼装成String
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < macAddressBytes.length; i++) {
-			if (i != 0) {
-				sb.append("-");
-			}
-			// mac[i] & 0xFF 是为了把byte转化为正整数
-			String s = Integer.toHexString(macAddressBytes[i] & 0xFF);
-			sb.append(s.length() == 1 ? 0 + s : s);
-		}
-		String macAddress = sb.toString().trim().toUpperCase();
-		try {
-			boolean exists = redisUtil.exists(macAddress);
-			if (!exists) {
-				redisUtil.set(macAddress, RandomUtil.getRandomNum(4, true));
-			}
-		} catch (GlobalException e) {
-			log.error("获取IP地址异常", e);
-		}
+		data.setAddress("未知");
+		return ResponseEntity.ok(Response.success("登陆成功", data));
 	}
 }

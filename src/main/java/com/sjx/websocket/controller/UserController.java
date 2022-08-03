@@ -4,6 +4,7 @@ import com.sjx.websocket.entity.enums.GlobalConstants;
 import com.sjx.websocket.entity.http.Response;
 import com.sjx.websocket.entity.module.User;
 import com.sjx.websocket.entity.vo.LoginVO;
+import com.sjx.websocket.entity.vo.UserVO;
 import com.sjx.websocket.exception.GlobalException;
 import com.sjx.websocket.exception.UserException;
 import com.sjx.websocket.service.UserService;
@@ -45,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Response<User>> login(@RequestBody LoginVO loginVO) {
+    public ResponseEntity<Response<UserVO>> login(@RequestBody LoginVO loginVO) {
         try {
             log.info("用户登录");
             return ResponseEntity.ok(Response.success("登陆成功", userService.login(loginVO)));
